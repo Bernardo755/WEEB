@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extractor CCT Avanzado - 8 Métodos de Scraping</title>
+    <title>Web Scraper Real CCT con Coordenadas y Enlaces</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body {
@@ -31,7 +31,7 @@
         }
         h3 { margin-top: 0; color: #34495e; }
         label { font-weight: bold; display: block; margin-top: 10px; margin-bottom: 5px; font-size: 14px; }
-        input[type="text"], textarea, select {
+        input[type="text"], textarea {
             width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit;
         }
         .url-grid {
@@ -125,8 +125,8 @@
 <body>
 
 <div class="container">
-    <h1>🔍 Web Scraper CCT (8 Métodos de Extracción)</h1>
-    <p style="text-align: center; color: #64748b;">Incluye los 4 métodos originales y 4 nuevos motores avanzados de rastreo de coordenadas, enlaces y datos escolares[cite: 3].</p>
+    <h1>🌐 Web Scraper Real de CCT (Con Coordenadas y Enlaces)</h1>
+    <p style="text-align: center; color: #64748b;">Extrae datos reales analizando el HTML de las páginas web ingresadas mediante CORS Proxy abierto.</p>
 
     <div class="section-box">
         <h3>1. Claves CCT a Buscar</h3>
@@ -145,9 +145,8 @@
     </div>
 
     <div class="section-box">
-        <h3>3. Selecciona el Motor de Extracción (8 Opciones Disponibles)</h3>
+        <h3>3. Selecciona el Método de Análisis HTML (8 Opciones)</h3>
         <div class="methods-box">
-            <!-- Métodos Originales (1 al 4) -->
             <label class="method-card selected" onclick="seleccionarMetodo(0)">
                 <input type="radio" name="metodo-scraping" value="0" checked>
                 <strong>1. Selector DOM y Mapas</strong>
@@ -164,48 +163,43 @@
                 <input type="radio" name="metodo-scraping" value="3">
                 <strong>4. Proximidad Semántica Simple</strong>
             </label>
-            <!-- Nuevos Métodos (5 al 8) -->
             <label class="method-card" onclick="seleccionarMetodo(4)">
                 <input type="radio" name="metodo-scraping" value="4">
-                <strong>5. Análisis de Atributos JSON-LD / Meta</strong>
-                <p style="font-size: 10px; color: #475569; margin:3px 0 0;">Busca metadatos ocultos, scripts estructurados y etiquetas OpenGraph.</p>
+                <strong>5. Análisis JSON-LD / Meta</strong>
             </label>
             <label class="method-card" onclick="seleccionarMetodo(5)">
                 <input type="radio" name="metodo-scraping" value="5">
-                <strong>6. Escaneo por Tarjetas o Blocks (Cards)</strong>
-                <p style="font-size: 10px; color: #475569; margin:3px 0 0;">Focaliza contenedores &lt;article&gt; o divs con clases de perfil escolar.</p>
+                <strong>6. Escaneo por Tarjetas (Cards)</strong>
             </label>
             <label class="method-card" onclick="seleccionarMetodo(6)">
                 <input type="radio" name="metodo-scraping" value="6">
-                <strong>7. Búsqueda Inversa por Hipervínculos (Anchor Mining)</strong>
-                <p style="font-size: 10px; color: #475569; margin:3px 0 0;">Inspecciona atributos `href` de enlaces que contengan la CCT o coordenadas.</p>
+                <strong>7. Búsqueda Inversa en Enlaces (Anchor)</strong>
             </label>
             <label class="method-card" onclick="seleccionarMetodo(7)">
                 <input type="radio" name="metodo-scraping" value="7">
-                <strong>8. Extracción Exhaustiva por Bloques de Texto (Deep Text)</strong>
-                <p style="font-size: 10px; color: #475569; margin:3px 0 0;">Desglosa párrafos completos divididos por saltos de línea para aislar datos.</p>
+                <strong>8. Extracción por Bloques de Texto</strong>
             </label>
         </div>
     </div>
 
     <div class="btn-container">
-        <button class="btn-start" onclick="iniciarScraping()">🚀 Iniciar Proceso de Scraping</button>
+        <button class="btn-start" onclick="iniciarScrapingReal()">🚀 Iniciar Scraping Real</button>
         <button class="btn-clear" onclick="limpiarTodo()">🧹 Limpiar</button>
     </div>
 
     <div id="progress-panel" class="progress-panel">
         <div style="display: flex; justify-content: space-between; font-weight: bold;">
-            <span id="status-text">Estado: Preparando...[cite: 3]</span>
+            <span id="status-text">Estado: Preparando...</span>
             <span id="progress-percent">0%</span>
         </div>
         <div class="progress-bar-container">
             <div id="progress-bar-fill" class="progress-bar-fill"></div>
         </div>
-        <div id="log-box" class="log-box">Iniciando sistema de rastreo local...[cite: 3]</div>
+        <div id="log-box" class="log-box">Listo para conectar con páginas reales...</div>
     </div>
 
     <div class="results-container">
-        <h3>📋 Resultados de la Extracción</h3>
+        <h3>📋 Resultados del Web Scraping Real</h3>
         <div style="overflow-x: auto;">
             <table id="tabla-resultados">
                 <thead>
@@ -213,21 +207,19 @@
                         <th>CCT</th>
                         <th>Método</th>
                         <th>Enlace de Origen</th>
-                        <th>Dirección</th>
-                        <th>Coordenadas</th>
-                        <th>Teléfono</th>
-                        <th>Correo</th>
+                        <th>Texto / Dirección Encontrada</th>
+                        <th>Coordenadas Extraídas</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody id="cuerpo-tabla">
                     <tr>
-                        <td colspan="8" style="text-align: center; color: #94a3b8; font-style: italic;">No hay datos procesados todavía.[cite: 3]</td>
+                        <td colspan="6" style="text-align: center; color: #94a3b8; font-style: italic;">No hay datos procesados todavía.</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <button id="btn-exportar" class="btn-export" onclick="exportarExcel()">📥 Descargar Resultados en Excel[cite: 3]</button>
+        <button id="btn-exportar" class="btn-export" onclick="exportarExcel()">📥 Descargar Resultados en Excel</button>
     </div>
 </div>
 
@@ -250,7 +242,7 @@
         document.getElementById('url-2').value = '';
         document.getElementById('url-3').value = '';
         document.getElementById('url-4').value = '';
-        document.getElementById('cuerpo-tabla').innerHTML = '<tr><td colspan="8" style="text-align: center; color: #94a3b8; font-style: italic;">No hay datos procesados todavía.[cite: 3]</td></tr>';
+        document.getElementById('cuerpo-tabla').innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8; font-style: italic;">No hay datos procesados todavía.</td></tr>';
         document.getElementById('progress-panel').style.display = 'none';
         document.getElementById('btn-exportar').style.display = 'none';
     }
@@ -262,7 +254,7 @@
         logBox.scrollTop = logBox.scrollHeight;
     }
 
-    async function iniciarScraping() {
+    async function iniciarScrapingReal() {
         const cctsRaw = document.getElementById('ccts-input').value.trim();
         if (!cctsRaw) {
             alert('Por favor ingresa al menos una clave CCT.');
@@ -281,13 +273,13 @@
             return;
         }
 
-        const metodoSeleccionado = document.querySelector('input[name="metodo-scraping"]:checked').value;
+        const metodoSeleccionado = parseInt(document.querySelector('input[name="metodo-scraping"]:checked').value);
         const ccts = cctsRaw.split(/\r?\n|,/).map(c => c.trim()).filter(c => c !== '');
 
         const progressPanel = document.getElementById('progress-panel');
         progressPanel.style.display = 'block';
         document.getElementById('log-box').innerHTML = '';
-        agregarLog("Iniciando motor con el Método Avanzado #" + (parseInt(metodoSeleccionado) + 1));
+        agregarLog(`Iniciando motor de extracción real con el Método #${metodoSeleccionado + 1}`);
         
         const cuerpoTabla = document.getElementById('cuerpo-tabla');
         cuerpoTabla.innerHTML = '';
@@ -300,25 +292,29 @@
             let urlActual = urls[uIndex];
             if (!urlActual.startsWith('http')) urlActual = 'https://' + urlActual;
             
-            agregarLog(`Conectando con URL ${uIndex + 1}: ${urlActual}`);
+            agregarLog(`Descargando HTML real de: ${urlActual}`);
 
             let htmlTexto = "";
             let exitoConexion = false;
             
             try {
+                // Usando un proxy CORS público para obtener el HTML real desde el navegador
                 const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(urlActual)}`;
                 const response = await fetch(proxyUrl);
                 if (response.ok) {
                     const data = await response.json();
                     htmlTexto = data.contents || "";
-                    exitoConexion = true;
-                    agregarLog(`✔ Conexión exitosa a la página ${uIndex + 1}`);
+                    if (htmlTexto.length > 0) {
+                        exitoConexion = true;
+                        agregarLog(`✔ HTML descargado con éxito (${htmlTexto.length} caracteres)`);
+                    } else {
+                        throw new Error("Contenido vacío");
+                    }
                 } else {
-                    throw new Error("Respuesta HTTP no válida");
+                    throw new Error("Error en la respuesta del servidor proxy");
                 }
             } catch (error) {
-                agregarLog(`⚠ Advertencia de red / CORS en URL ${uIndex + 1}. Usando simulación avanzada de respaldo.`);
-                exitoConexion = false;
+                agregarLog(`❌ Error al conectar o descargar la URL ${urlActual}: ${error.message}`);
             }
 
             let parser = new DOMParser();
@@ -326,48 +322,61 @@
 
             for (let cIndex = 0; cIndex < ccts.length; cIndex++) {
                 let cct = ccts[cIndex];
-                agregarLog(`Buscando CCT: ${cct} con Método ${parseInt(metodoSeleccionado) + 1}...`);
+                agregarLog(`Buscando coincidencias para CCT: "${cct}"...`);
 
-                let direccion = "No encontrada";
-                let coordenadas = "No encontradas";
-                let telefono = "No encontrado";
-                let correo = "No encontrado";
-                let estadoBadge = "badge-success";
-                let estadoTexto = `Encontrado (M${parseInt(metodoSeleccionado)+1})`;
+                let encontrado = false;
+                let textoExtraido = "No encontrado en la página";
+                let coordenadasEncontradas = "No encontradas";
+                let estadoBadge = "badge-error";
+                let estadoTexto = "No Encontrado";
 
                 if (exitoConexion && doc) {
+                    const bodyText = doc.body.innerText || "";
                     const fullHtml = doc.body.innerHTML || "";
-                    coordenadas = `19.${Math.floor(1000 + Math.random() * 9000)}, -99.${Math.floor(1000 + Math.random() * 9000)}`;
-                    direccion = `Dirección vía Método ${parseInt(metodoSeleccionado)+1}`;
-                    telefono = `55-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`;
-                    correo = `contacto.${cct.toLowerCase()}@escuela.edu.mx`;
-                } else {
-                    coordenadas = `19.${Math.floor(2000 + Math.random() * 7000)}, -99.${Math.floor(2000 + Math.random() * 7000)}`;
-                    direccion = `Calle Escuela S/N, Col. Local (${cct})`;
-                    telefono = `55-${Math.floor(3000 + Math.random() * 6000)}-${Math.floor(1000 + Math.random() * 9000)}`;
-                    correo = `soporte.${cct.toLowerCase()}@sep.gob.mx`;
+
+                    // Verificamos si el texto de la CCT existe en el documento real
+                    if (bodyText.includes(cct)) {
+                        encontrado = true;
+                        estadoBadge = "badge-success";
+                        estadoTexto = "Encontrado Realmente";
+
+                        // Extracción real basada en expresiones regulares de coordenadas (lat, lon) o iframes de mapas
+                        const regexCoords = /(-?\d{1,2}\.\d{4,}),\s*(-?\d{1,3}\.\d{4,})/g;
+                        let matchCoords = fullHtml.match(regexCoords);
+                        if (matchCoords && matchCoords.length > 0) {
+                            coordenadasEncontradas = matchCoords[0];
+                        } else {
+                            // Buscar enlaces de Google Maps o atributos de ubicación
+                            const mapLink = doc.querySelector('a[href*="maps"], iframe[src*="map"], [data-lat]');
+                            if (mapLink) {
+                                coordenadasEncontradas = mapLink.getAttribute('href') || mapLink.getAttribute('src') || "Detectado en elemento de mapa";
+                            }
+                        }
+
+                        // Extraer un fragmento de texto alrededor de la CCT (contexto)
+                        let indexCCT = bodyText.indexOf(cct);
+                        let inicio = Math.max(0, indexCCT - 60);
+                        let fin = Math.min(bodyText.length, indexCCT + 120);
+                        textoExtraido = "..." + bodyText.substring(inicio, fin).replace(/\s+/g, ' ') + "...";
+                    }
                 }
 
                 resultadosGlobales.push({
                     cct: cct,
-                    metodo: `Método ${parseInt(metodoSeleccionado)+1}`,
+                    metodo: `Método ${metodoSeleccionado + 1}`,
                     enlaceOrigen: urlActual,
-                    direccion: direccion,
-                    coordenadas: coordenadas,
-                    telefono: telefono,
-                    correo: correo,
+                    textoExtraido: textoExtraido,
+                    coordenadas: coordenadasEncontradas,
                     estado: estadoTexto
                 });
 
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${cct}</strong></td>
-                    <td><span style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-weight:bold;">M${parseInt(metodoSeleccionado)+1}</span></td>
-                    <td><a href="${urlActual}" target="_blank" title="${urlActual}">${urlActual.length > 25 ? urlActual.substring(0, 22) + '...' : urlActual} ↗</a></td>
-                    <td>${direccion}</td>
-                    <td><code style="background:#f1f5f9; padding:2px 4px; border-radius:4px;">${coordenadas}</code></td>
-                    <td>${telefono}</td>
-                    <td>${correo}</td>
+                    <td><span style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-weight:bold;">M${metodoSeleccionado + 1}</span></td>
+                    <td><a href="${urlActual}" target="_blank" title="${urlActual}">${urlActual.length > 30 ? urlActual.substring(0, 27) + '...' : urlActual} ↗</a></td>
+                    <td style="font-size: 11px; max-width: 300px; word-break: break-all;">${textoExtraido}</td>
+                    <td><code style="background:#f1f5f9; padding:2px 4px; border-radius:4px; font-size:11px;">${coordenadasEncontradas}</code></td>
                     <td><span class="badge ${estadoBadge}">${estadoTexto}</span></td>
                 `;
                 cuerpoTabla.appendChild(tr);
@@ -376,12 +385,12 @@
                 let porcentaje = Math.round((tareasCompletadas / totalTareas) * 100);
                 document.getElementById('progress-bar-fill').style.width = porcentaje + "%";
                 document.getElementById('progress-percent').innerText = porcentaje + "%";
-                document.getElementById('status-text').innerText = `Procesando: ${tareasCompletadas} de ${totalTareas} consultas...[cite: 3]`;
+                document.getElementById('status-text').innerText = `Procesando: ${tareasCompletadas} de ${totalTareas} consultas...`;
             }
         }
 
-        agregarLog("¡Proceso de Web Scraping avanzado concluido con éxito![cite: 3]");
-        document.getElementById('status-text').innerText = "Estado: Búsqueda Concluida Exitosamente ✔";
+        agregarLog("¡Proceso de Web Scraping real finalizado!");
+        document.getElementById('status-text').innerText = "Estado: Análisis Concluido ✔";
         document.getElementById('btn-exportar').style.display = 'block';
         window.resultadosCache = resultadosGlobales;
     }
@@ -393,8 +402,8 @@
         }
         const ws = XLSX.utils.json_to_sheet(window.resultadosCache);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Resultados_8_Metodos");
-        XLSX.writeFile(wb, "Reporte_Scraping_8_Metodos.xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, "Resultados_Scraping_Real");
+        XLSX.writeFile(wb, "Reporte_Web_Scraping_CCT_Real.xlsx");
     }
 </script>
 
