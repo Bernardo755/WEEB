@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Scraper Real CCT - Teléfonos, Correo y Coordenadas</title>
+    <title>Web Scraper Real CCT - Extracción Localizada por CCT</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body {
@@ -124,8 +124,8 @@
 <body>
 
 <div class="container">
-    <h1>🌐 Web Scraper Real CCT (Teléfono, Correo y Coordenadas)</h1>
-    <p style="text-align: center; color: #64748b;">Extrae datos reales analizando texto, correos electrónicos, teléfonos y coordenadas geográficas del HTML.</p>
+    <h1>🌐 Web Scraper Real CCT (Extracción Asociada por CCT)</h1>
+    <p style="text-align: center; color: #64748b;">Busca cada clave CCT de forma independiente en la página y extrae sus datos específicos asociados.</p>
 
     <div class="section-box">
         <h3>1. Claves CCT a Buscar</h3>
@@ -182,7 +182,7 @@
     </div>
 
     <div class="btn-container">
-        <button class="btn-start" onclick="iniciarScrapingReal()">🚀 Iniciar Scraping Real</button>
+        <button class="btn-start" onclick="iniciarScrapingReal()">🚀 Iniciar Scraping Localizado</button>
         <button class="btn-clear" onclick="limpiarTodo()">🧹 Limpiar</button>
     </div>
 
@@ -198,17 +198,17 @@
     </div>
 
     <div class="results-container">
-        <h3>📋 Resultados del Web Scraping Real</h3>
+        <h3>📋 Resultados del Web Scraping Localizado</h3>
         <div style="overflow-x: auto;">
             <table id="tabla-resultados">
                 <thead>
                     <tr>
-                        <th>CCT</th>
+                        <th>CCT Buscada</th>
                         <th>Método</th>
                         <th>Enlace de Origen</th>
-                        <th>Teléfono</th>
-                        <th>Correo Electrónico</th>
-                        <th>Coordenadas</th>
+                        <th>Teléfono Localizado</th>
+                        <th>Correo Localizado</th>
+                        <th>Coordenadas Localizadas</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
@@ -279,7 +279,7 @@
         const progressPanel = document.getElementById('progress-panel');
         progressPanel.style.display = 'block';
         document.getElementById('log-box').innerHTML = '';
-        agregarLog(`Iniciando motor de extracción real con el Método #${metodoSeleccionado + 1}`);
+        agregarLog(`Iniciando motor de extracción localizado con el Método #${metodoSeleccionado + 1}`);
         
         const cuerpoTabla = document.getElementById('cuerpo-tabla');
         cuerpoTabla.innerHTML = '';
@@ -321,7 +321,7 @@
 
             for (let cIndex = 0; cIndex < ccts.length; cIndex++) {
                 let cct = ccts[cIndex];
-                agregarLog(`Buscando coincidencias para CCT: "${cct}"...`);
+                agregarLog(`Buscando la CCT específica: "${cct}"...`);
 
                 let telefonoEncontrado = "No encontrado";
                 let correoEncontrado = "No encontrado";
@@ -333,51 +333,44 @@
                     const bodyText = doc.body.innerText || "";
                     const fullHtml = doc.body.innerHTML || "";
 
-                    if (bodyText.includes(cct)) {
+                    let indexCCT = bodyText.indexOf(cct);
+                    if (indexCCT !== -1) {
                         estadoBadge = "badge-success";
-                        estadoTexto = "Encontrado Realmente";
+                        estadoTexto = "CCT Encontrada";
 
-                        // 1. Extracción de Correos Electrónicos (Regex global)
+                        // Creamos una "ventana de contexto" (350 caracteres antes y 350 después de la CCT)
+                        let inicioContexto = Math.max(0, indexCCT - 350);
+                        let finContexto = Math.min(bodyText.length, indexCCT + cct.length + 350);
+                        let snippetContexto = bodyText.substring(inicioContexto, finContexto);
+
+                        // 1. Buscar Correo en el entorno cercano a la CCT
                         const regexEmail = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-                        let matchEmails = bodyText.match(regexEmail);
+                        let matchEmails = snippetContexto.match(regexEmail);
                         if (matchEmails && matchEmails.length > 0) {
-                            // Filtrar posibles correos basura o repetidos
-                            let uniqueEmails = [...new Set(matchEmails)];
-                            correoEncontrado = uniqueEmails.slice(0, 2).join(", ");
+                            correoEncontrado = [...new Set(matchEmails)][0];
                         }
 
-                        // 2. Extracción de Teléfonos (Patrones numéricos comunes de 8 a 10 dígitos o formato tel:)
-                        const telLink = doc.querySelector('a[href^="tel:"]');
-                        if (telLink) {
-                            telefonoEncontrado = telLink.getAttribute('href').replace('tel:', '').trim();
-                        } else {
-                            const regexTel = /(?:\+?52\s?)?(?:\(?\d{2,3}\)?[\s\.-]?)?\d{3,4}[\s\.-]?\d{4}/g;
-                            let matchTels = bodyText.match(regexTel);
-                            if (matchTels && matchTels.length > 0) {
-                                // Filtrar cadenas que parezcan teléfonos válidos (evitar años o códigos postales sueltos)
-                                let validTels = matchTels.filter(t => t.replace(/\D/g, '').length >= 8);
-                                if (validTels.length > 0) {
-                                    telefonoEncontrado = [...new Set(validTels)][0];
-                                }
+                        // 2. Buscar Teléfono en el entorno cercano a la CCT
+                        const regexTel = /(?:\+?52\s?)?(?:\(?\d{2,3}\)?[\s\.-]?)?\d{3,4}[\s\.-]?\d{4}/g;
+                        let matchTels = snippetContexto.match(regexTel);
+                        if (matchTels && matchTels.length > 0) {
+                            let validTels = matchTels.filter(t => t.replace(/\D/g, '').length >= 8);
+                            if (validTels.length > 0) {
+                                telefonoEncontrado = [...new Set(validTels)][0];
                             }
                         }
 
-                        // 3. Extracción de Coordenadas
+                        // 3. Buscar Coordenadas en el entorno cercano o en el documento general
                         const regexCoords = /(-?\d{1,2}\.\d{4,}),\s*(-?\d{1,3}\.\d{4,})/g;
-                        let matchCoords = fullHtml.match(regexCoords);
+                        let matchCoords = snippetContexto.match(regexCoords) || fullHtml.match(regexCoords);
                         if (matchCoords && matchCoords.length > 0) {
                             coordenadasEncontradas = matchCoords[0];
-                        } else {
-                            const mapLink = doc.querySelector('a[href*="maps"], iframe[src*="map"], [data-lat]');
-                            if (mapLink) {
-                                coordenadasEncontradas = mapLink.getAttribute('href') || mapLink.getAttribute('src') || "Detectado en elemento de mapa";
-                            }
                         }
                     }
                 }
 
                 resultadosGlobales.push({
-                    cct: cct,
+                    cctBuscada: cct,
                     metodo: `Método ${metodoSeleccionado + 1}`,
                     enlaceOrigen: urlActual,
                     telefono: telefonoEncontrado,
@@ -406,7 +399,7 @@
             }
         }
 
-        agregarLog("¡Proceso de Web Scraping real finalizado con éxito!");
+        agregarLog("¡Proceso de Web Scraping localizado finalizado con éxito!");
         document.getElementById('status-text').innerText = "Estado: Análisis Concluido ✔";
         document.getElementById('btn-exportar').style.display = 'block';
         window.resultadosCache = resultadosGlobales;
@@ -419,8 +412,8 @@
         }
         const ws = XLSX.utils.json_to_sheet(window.resultadosCache);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Resultados_Completo");
-        XLSX.writeFile(wb, "Reporte_Web_Scraping_CCT_Completo.xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, "Resultados_CCT_Localizado");
+        XLSX.writeFile(wb, "Reporte_Web_Scraping_CCT_Localizado.xlsx");
     }
 </script>
 
